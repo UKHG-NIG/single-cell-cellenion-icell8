@@ -5,7 +5,7 @@ require(RCurl)
 
 # Set directory to which to download the files
 
-# Download datasets from ICELL8
+# Download files related to ICELL8 datasets
 datasets <- c("GSM5411464","GSM5411465","GSM5411466")
 for(data in datasets){
   gsm <- getGEO(dataset)
@@ -18,13 +18,13 @@ for(data in datasets){
   download.file(url, basename(url))
   gunzip(basename(url), overwrite=T, remove=T)
 }
-# Download geneInfo
+## geneInfo
 gse <- getGEO("GSE179204", GSEMatrix = F)
 url <- gsm@header$supplementary_file_1
 download.file(url, basename(url))
 gunzip(basename(url), overwrite=T, remove=T)
 
-# Download datasets from ICELL8
+# Download files related to Cellenion/ICELL8 dataset
 gsm <- getGEO("GSM5411467")
 ## Gene matrix
 url <- gsm@header$supplementary_file_1
