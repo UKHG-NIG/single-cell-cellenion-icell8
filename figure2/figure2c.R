@@ -1,5 +1,5 @@
 # This script is used to plot bar plots of the QC metrics from the two single-cell RNA sequencing approaches
-setwd("~/Downloads/ICELL8_Cellenion_project")
+setwd("/path/to/InputDir")
 
 # Load supporting libraries
 require(ggpubr)
