@@ -17,5 +17,5 @@ standard_analysis(gm_loc = "GSM5411464_geneMatrix_files.txt", metadata_loc = "GS
 # CellenONE/ICELL8 dataset
 ## Default analysis for samples
 standard_analysis(gm = "GSM5411467_CellenONE_geneMatrix.csv", metadata = "GSM5411467_CellenONE_metadata.csv", gene_info_loc="GSM5411467_gene_info.csv",
-                  cluster_analysis=T, grouping_var="Sample", report=T, CogentAP_data = T, output_dir = "CogentDS_CellenONE", auto_outlier_removal=F,
-                  mito_frac=c(0,1), intergenic_frac=c(0,1))
+                  cluster_analysis=T, grouping_var="Sample", report=T, CogentAP_data = T, output_dir = "CogentDS_CellenONE",
+                  qc_cell_abslowcov=5000, mito_frac=c(0,1), intergenic_frac=c(0,1), auto_outlier_removal=F)
