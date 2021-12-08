@@ -4,6 +4,7 @@ setwd("/path/to/InputDir")
 # Load supporting libraries
 require(VennDiagram)
 require(reshape2)
+require(ggplot2)
 
 # Load datasets
 ## Composite approach
@@ -23,11 +24,9 @@ grid.draw(venn.diagram(x = list("CellenONE-ICELL8"=rownames(composite$qc_data$gm
 ## Icell8 
 icell8_mat <- icell8$qc_data$metadata[,c("Sample","No_of_Genes")]
 icell8_mat$platform="ICELL8"
-icell8_mat <- icell8_mat[!(icell8_mat$Sample %in% c("Pos_Ctrl","Neg_Ctrl")),]
 ## Cellenion 
 cellenion_mat <- composite$qc_data$metadata[,c("Sample","No_of_Genes")]
 cellenion_mat$platform="CellenONE"
-cellenion_mat <- cellenion_mat[!(cellenion_mat$Sample %in% "Goe247_wo__fix"),]
 # Plot 
 plotDF <- melt(rbind(icell8_mat, cellenion_mat))
 ggplot(plotDF[plotDF$variable=="No_of_Genes",], aes(factor(platform), value, fill=platform))+
