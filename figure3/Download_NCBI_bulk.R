@@ -8,14 +8,14 @@ require(RCurl)
 datasets <- 19:42
 for(d in datasets){
   dataset <- paste("GSM54115",d,sep="")
-  # gsm <- getGEO(dataset)
+  gsm <- getGEO(dataset)
   ## Gene counts
-  # url <- gsm@header$supplementary_file_1
-  # download.file(url, basename(url))
+  url <- gsm@header$supplementary_file_1
+  download.file(url, basename(url))
   gunzip(basename(url), overwrite=T, remove=T)
 }
 
-# Create sample2group CSV file 
+# Create CSV file with table of gene count files to import into DESeq2
 df <- as.data.frame(Reduce("rbind",lapply(list.files(pattern = "_geneCounts.txt"), function(file){
   group <- strsplit(basename(file), split = "_")[[1]][4]
   name <- paste(strsplit(basename(file), split = "_")[[1]][c(4,3)], collapse ="-")
