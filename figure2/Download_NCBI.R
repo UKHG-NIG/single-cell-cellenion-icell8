@@ -8,7 +8,7 @@ require(RCurl)
 # Download files related to ICELL8 datasets
 datasets <- c("GSM5411464","GSM5411465","GSM5411466")
 for(data in datasets){
-  gsm <- getGEO(dataset)
+  gsm <- getGEO(data)
   ## Gene matrix
   url <- gsm@header$supplementary_file_1
   download.file(url, basename(url))
