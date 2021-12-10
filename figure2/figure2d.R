@@ -1,5 +1,4 @@
-# Generate Venn diagram and violin plots comparing number of genes detected in each approach
-setwd("/path/to/InputDir")
+# Generate Venn diagram and violin plots comparing number of genes expressed in each approach (Fig2D)
 
 # Load supporting libraries
 require(VennDiagram)
