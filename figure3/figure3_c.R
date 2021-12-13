@@ -22,7 +22,7 @@ for(sample in samples){
   vennList$icell8 <- icell8_markers
   venn.diagram(x = vennList, col = "transparent",
                fill = c("blue", "yellow"),# fill = c("blue", "green","red"),
-               alpha = 0.5,cex=2,cat.cex=1.5,
+               alpha = 0.5,cex=2,cat.cex=1.5,fontfamily ="sans",cat.fontfamily="sans",
                category.names = c("CellenONE-ICELL8","ICELL8"),
                print.mode=c("raw","percent"),
                filename = paste("Fig3c_Venn_markers_",sample,".pdf",sep=""))
