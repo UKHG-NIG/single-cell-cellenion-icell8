@@ -12,12 +12,14 @@ composite <- get(load("CogentDS_CellenONE/CogentDS.analysis.rda"))
 icell8 <- get(load("CogentDS_ICELL8/CogentDS.analysis.rda"))
 
 # Plot Venn diagram for quality-control (QC) genes between the approaches
+pdf("Figure2D_Venn.pdf")
 grid.draw(venn.diagram(x = list("CellenONE-ICELL8"=rownames(composite$qc_data$gm),
                                 "ICELL8"=rownames(icell8$qc_data$gm)), col = "transparent",
                        fontfamily ="sans",cat.fontfamily="sans",
                        fill = c("blue", "yellow"),# fill = c("blue", "green","red"),
                        alpha = 0.5, cat.cex=1.5, cex=1.5, height=100, width=100,filename=NULL,
                        print.mode=c("raw","percent")))
+graphics.off()
 
 # Plot violin plot for genes detected per cell
 # Raw reads counted for different platforms 
