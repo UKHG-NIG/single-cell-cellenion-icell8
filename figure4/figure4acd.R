@@ -38,10 +38,10 @@ reduction.plot(vis_obj = icell8_tsne, metadata = icell8_metadata,
                grouping_var = "Sample", marker_size=0.5, alpha=1,file="Fig4A_ICELL8_samples_tSNE.pdf")
 
 # Figure 4C: tSNE plot of composite approach with graph-based clusters ####
-# composite_tsne <- gm.tsne(gm = composite_gm, metadata = composite_metadata,
-#                     grouping_var = "Graph-based_Clusters", dims = 2, theta = 0.25,
-#                     max_iter = 1500, pca = FALSE, pca_center = FALSE, 
-#                     pca_scale = FALSE, perplexity = 20, plot = F)
+# TODO: re-cluster cells with graph-based method and generate tSNE plot
+CogentDS.cluster(m = CogentDS_data[["pca_data"]]$pca_obj$x[, 
+            1:CogentDS_data[["pca_data"]]$pc_count], metadata = CogentDS_data[["qc_data"]]$metadata, 
+            method = "Graph-based")
 reduction.plot(vis_obj = composite_tsne, metadata = composite_metadata, 
                grouping_var = "Graph-based_Clusters", marker_size=0.5, alpha=1, file="Fig4C_composite_clusters_tSNE.pdf")
 
@@ -55,3 +55,9 @@ reduction.plot(vis_obj = composite_tsne, gm=composite[["qc_data"]]$gm,
 reduction.plot(vis_obj = composite_tsne, gm=composite[["qc_data"]]$gm,
                metadata = composite_metadata, 
                gene_highlight = "ENSG00000184752_NDUFA12", file="Fig4D_composite_NDUFA12_tSNE.pdf", marker_size=0.5, alpha=1)
+
+# Figure 4E: heatmap of top 30 markers based on their ranks ####
+
+# Supp Figure 4a: find top 30 markers for each ICELL8 sample, and generate a heatmap similar to 4E
+
+# Supp Figure 4b: Venn diagram of top 30 CellenONE and ICELL8 markers
