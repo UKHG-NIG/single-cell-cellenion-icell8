@@ -17,6 +17,10 @@ for(sample in samples){
   df <- df[order(abs(df$icell8_rank)+abs(df$cellenion_rank), decreasing=TRUE),]
   # Select top 100 markers to plot
   df <- df[1:100,]
+  write.table(df[,-1],sep=",",
+              file = paste("top100_markers_",sample,".csv", sep=""),
+              quote = F, row.names=df$Row.names, col.names = NA)
+  
   plotDF <- data.frame(icell8=log(df[[grep("icell8",grep(sample,colnames(df), ignore.case=T, value=T), value=T)]]),
                        cellenion=log(df[[grep("cellenion",grep(sample,colnames(df), ignore.case=T, value=T), value=T)]]))
   
