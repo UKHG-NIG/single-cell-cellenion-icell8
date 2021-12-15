@@ -9,5 +9,5 @@ standard_analysis(gm_loc = "GSM5411464_geneMatrix_files.txt", metadata_loc = "GS
 # CellenONE/ICELL8 dataset
 standard_analysis(gm = "GSM5411467_CellenONE_geneMatrix.csv", metadata = "GSM5411467_CellenONE_metadata.csv", gene_info_loc="GSM5411467_gene_info.csv",
                   cluster_analysis=T, grouping_var="Sample", report=T, CogentAP_data = T, output_dir = "CogentDS_CellenONE_fig4",
-                  qc_cell_abslowcov=5000, qc_cells_abslowgenecount = 200 mito_frac=c(0,1), intergenic_frac=c(0,1), auto_outlier_removal=F,
+                  qc_cell_abslowcov=5000, qc_cells_abslowgenecount = 200, mito_frac=c(0,1), intergenic_frac=c(0,1), auto_outlier_removal=F,
                   cell_type=c("Goe247", "Goe486", "Goe615", "Goe800", "Goe1303", "Goe1305", "Goe1309","Goe1360"), reduction_type="tSNE")
