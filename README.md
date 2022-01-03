@@ -28,11 +28,11 @@ This repository contains shell and R scripts used to analyse single-cell RNA-seq
 ## 1. Single-cell RNA-seq datasets
 For both ICELL8 and composite datasets, the analysis used to generate gene matrix and metadata from FastQ files are as follows:
 1) Demultiplex reads based on barcodes each cell is affiliated with (found in the `wellLists` directory):
-```
+```Shell
 cogent demux -i /path/to/scRNAseq.fastq.gz -p /path/to/scRNAseq.fastq.gz -t ICELL8_FLA -b /path/to/wellList.txt -o /path/to/demux_out --gz
 ```
 2) Build genome based on the ENSEMBL hg38 fasta file and GTF file v103:
-```
+```Shell
 cogent add_genome -g hg38-v103 -f /path/to/Homo_sapiens.GRCh38.dna.toplevel.fa -a /path/to/Homo_sapiens.GRCh38.103.gtf
 ```
 3) Analyse data with human genome reference. In brief, the following steps are utilised:
@@ -41,15 +41,19 @@ cogent add_genome -g hg38-v103 -f /path/to/Homo_sapiens.GRCh38.dna.toplevel.fa -
 - Quantify reads in exonic, genic (including introns) and mitochondrial regions for all hg38 v103 genes using `featureCounts`, where only primary alignments are counted.
 - Summarise data and re-organise into gene matrix, metadata and gene info.
 - Generate `CogentDS` report with default parameters.
-```
+```Shell
 cogent analyse -i /path/to/demux_out/demux_out_demuxed_R1.fastq.gz -t ICELL8_3DE -g hg38-v103 -o /path/to/analysis_out -d /path/to/demux_out/demux_out_counts_all.csv
 ```
 ## 2. Bulk RNA-seq data
 To make sure the bulk and single-cell RNA-seq datasets are comparable, steps 3a-c used for the single-cell RNA-seq data should be used in the same way.
 ## 3. Regulon analysis
-
+This analysis involved associating the gene expressions from individual cells/samples with specific underlying phenotypes. In brief, the following steps were utilized:
+- Variants were called from alignment files for both bulk RNA-seq and scRNA-seq data using GATK.
+- For each sample, top variants from the scRNA-seq data were selected for each sample as (a) sample-specific, (b) corroborated by bulk RNA-seq data, (c) non-synonymous mutations, (d) with highest mutation rate (i.e. maximum proportion of mutant-containing depth out of total depth in that position), and (e) with highest overall depth.
+- For each top variant, a multiple regression analysis was executed between average gene expressions per sample and the mutation percentage in that sample (i.e. proportion of cells in that sample containing the mutation).
+The scripts used for this analysis can be found in the directory "Figure 5".
 ## 4. Differential expression of mutant vs. non-mutant cells
-
+As an additional assessment of the association between the sample phenotypes (mutations) and the gene expressions, the top variants of each sample were searched for within individual cells from that sample, and a differential expression analysis was performed for all genes between mutated and non-mutated cells.
 
 # Citation
 The scripts were used to generate the figures and results for the following paper:
