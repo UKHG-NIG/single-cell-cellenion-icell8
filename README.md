@@ -23,6 +23,8 @@ This repository contains R scripts used to analyse single-cell RNA-seq data gene
 - [DESeq2](https://bioconductor.org/packages/release/bioc/html/DESeq2.html)
 - [GGally](https://CRAN.R-project.org/package=GGally)
 - [circlize](https://CRAN.R-project.org/package=circlize)
+- [VariantAnnotation](https://bioconductor.org/packages/release/bioc/html/VariantAnnotation.html)
+- 
 
 # Usage
 ## 1. Single-cell RNA-seq datasets
