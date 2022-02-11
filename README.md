@@ -51,10 +51,10 @@ This analysis involved associating the gene expressions from individual cells/sa
 - Variants were called from alignment files for both bulk RNA-seq and scRNA-seq data using `GATK`.
 - For each sample, top variants from the scRNA-seq data were selected for each sample as (a) sample-specific, (b) corroborated by variants called from bulk RNA-seq data, (c) non-synonymous mutations, (d) with highest mutation rate (i.e. maximum proportion of mutant-containing depth out of total depth in that position), and (e) with highest overall depth.
 - For each top variant, a multiple regression analysis was executed between average gene expressions per sample and the mutation percentage in that sample (i.e. proportion of cells in that sample containing the mutation).
-The scripts used for this analysis can be found in the directory ```├──Figure 5```.
+The scripts used for this analysis can be found in the directory ```├──figure5```.
 ## 4. Differential expression of mutant vs. non-mutant cells
 As an additional assessment of the association between the sample phenotypes (mutations) and the gene expressions, the top variants of each sample were searched for within individual cells from that sample, and a differential expression analysis was performed for all genes between mutated and non-mutated cells.
-The script used for this analysis can be found in the directory ```├──Figure 6```.
+The script used for this analysis can be found in the directory ```├──figure6```.
 
 # Citation
 The scripts were used to generate the figures and results for the following paper:
