@@ -6,7 +6,7 @@ This directory contains scripts used to perform the variant calling in scRNA- an
 # BAM to grouped/sorted BAM
 gatk AddOrReplaceReadGroups -I /path/to/sample.bam -O /path/to/sample.group.bam -SO coordinate --CREATE_INDEX true --RGID RNA --RGLB RNA --RGPL Illumina --RGPU Hiseq --RGSM sample --TMP_DIR .
 
-# Mark duplicates (~1h)
+# Mark duplicates
 gatk MarkDuplicates -I /path/to/sample.group.bam -O /path/to/sample.marked.bam --METRICS_FILE /path/to/sample_reads.metrics --CREATE_INDEX true --VALIDATION_STRINGENCY LENIENT
 
 # CIGAR reads
