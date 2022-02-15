@@ -1,4 +1,4 @@
-# Analysis of transcriptional heterogeneity of dermal fibroblast derived from patients using the novel approach (Figure 4, Supplementary Figure 4)
+# Analysis of transcriptional heterogeneity of dermal fibroblast derived from patients using the novel approach (Figure 4)
 
 1. Generate the CogentDS reports for the ICELL8 and novel approach datasets (Figure 4a)
 ```
