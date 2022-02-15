@@ -11,11 +11,11 @@ Rscript figure4b.R
 ```
 
 3. Using the CogentDS objects, plot the following plots:
-  i. t-SNE with unsupervised cluster (Figure 4C)
-  ii. the gene expression gradients for genes MMP2, H2AX and NDUFA12 in all cells (Figure 4D)
-  iii. heatmap for the top 30 ranked markers in each cluster in the dataset from the novel approach (Figure 4E)
-  iv. heatmap for the top 30 ranked markers in each cluster in the dataset from the ICELL8 (Supp. Fig. 4A)
-  v. a venn diagram overlapping the markers from steps (iii) and (iv) (Supp. Fig. 4B)
+    - t-SNE with unsupervised cluster (Figure 4C)
+    - the gene expression gradients for genes MMP2, H2AX and NDUFA12 in all cells (Figure 4D)
+    - heatmap for the top 30 ranked markers in each cluster in the dataset from the novel approach (Figure 4E)
+    - heatmap for the top 30 ranked markers in each cluster in the dataset from the ICELL8 (Supp. Fig. 4A)
+    - a venn diagram overlapping the markers from the two heatmaps above (Supp. Fig. 4B)
 ```
 Rscript figure4cde.R
 ```
