@@ -17,9 +17,27 @@ gatk HaplotypeCaller -R /path/to/Homo_sapiens.GRCh38.dna.primary_assembly.fa -I 
 
 # Variant filtering
 gatk VariantFiltration -R /path/to/Homo_sapiens.GRCh38.dna.primary_assembly.fa -V /path/to/sample_variants.vcf -O /path/to/sample_variants_filt.vcf --window 35 --cluster 3 --filter-name FS --filter "FS > 30.0" --filter-name QD --filter "QD < 2.0"
+
+# Index the resulting VCF file (required for processing the file within R)
+gatk IndexFeatureFile -F /path/to/sample_variants_filt.vcf
 ```
-- 3) Combine the VCF files from the different samples using ```combine_VCFs.R```
-- 4) Find sample-specific mutations using ```sampleSpecificMutations.R```
-- 5) Determine which mutations are non-synonymous using ```getCodonInfo_target_variants.R```
-- 6) Calculate mutation percentages for top variants using ```find_variants_in_bam.R```
-- 7) Calculate regressions for target variations using ```regression_mutPerc-vs-averageCounts.R```
+- 3) Combine the VCF files from the different samples
+```
+Rscript 3_combine_VCFs.R
+```
+- 4) Find sample-specific mutations using
+```
+Rscript 4_sampleSpecificMutations.R
+```
+- 5) Determine which mutations are non-synonymous
+```
+Rscript 5_getCodonInfo_target_variants.R
+```
+- 6) Calculate mutation percentages for top variants
+```
+Rscript 6_find_variants_in_bam.R
+```
+- 7) Calculate regressions for target variations
+```
+Rscript 7_regression_mutPerc-vs-averageCounts.R
+```
