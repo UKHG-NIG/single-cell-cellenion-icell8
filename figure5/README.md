@@ -23,11 +23,11 @@ gatk IndexFeatureFile -F /path/to/sample_variants_filt.vcf
 ```
 - 3) Combine the VCF files from the different samples
 ```
-Rscript 3_combine_VCFs.R
+Rscript 3_combine_VCFs.R -v $(find vcf -path '*_variants_filt.vcf' | tr '\n' ',') -o combineVCFs
 ```
-- 4) Find sample-specific mutations using
+- 4) Find sample-specific mutations
 ```
-Rscript 4_sampleSpecificMutations.R
+Rscript 4_sampleSpecificMutations.R -i combineVCFs/VCF_annotations.csv -o sampleSpecificVars
 ```
 - 5) Determine which mutations are non-synonymous
 ```
