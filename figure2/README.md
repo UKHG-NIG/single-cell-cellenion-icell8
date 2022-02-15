@@ -1,4 +1,4 @@
-Figure 2: QC metrics of both approaches (2C) and number of genes expressed (2D)
+# Comparing QC metrics and numbers of genes expressed in both ICELL8 and novel approach (Figures 2C and 2D)
 
 To generate the plot for figure 2, run the commands in the following order:
 
