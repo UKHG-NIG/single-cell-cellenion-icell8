@@ -1,6 +1,6 @@
 # Regulon analysis
 This directory contains scripts used to perform the variant calling in scRNA- and bulk RNA-seq BAM files, and use the resulting VCF files to perform the regulon analysis. The analysis steps are as follows:
-- 1) For the scRNA-seq BAM file, extract reads associated to different cells based on their sample affiliation, and build BAM files for each sample (in our case, we use the "grep" command in shell; )
+- 1) For the scRNA-seq BAM file, extract reads associated to different cells based on their sample affiliation, and build BAM files for each sample (in our case, we use the "grep" command in shell)
 - 2) For the sample-specific BAM files from the scRNA-seq and the bulk RNA-seq data, call for the variants in each file using `GATK`. Specifically, the following commands were used to call the variants from each sample:
 ```Shell
 # BAM to grouped/sorted BAM
