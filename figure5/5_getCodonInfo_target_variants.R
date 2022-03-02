@@ -4,13 +4,40 @@ library(BSgenome.Hsapiens.UCSC.hg38)
 library(TxDb.Hsapiens.UCSC.hg38.knownGene)
 txdb <- TxDb.Hsapiens.UCSC.hg38.knownGene
 library(biomaRt)
-library(SNPlocs.Hsapiens.dbSNP151.GRCh38)
-snps <- SNPlocs.Hsapiens.dbSNP151.GRCh38
+mart <- useEnsembl(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
 
-mart <- useDataset("hsapiens_gene_ensembl", useEnsembl(biomart = "genes", dataset = "hsapiens_gene_ensembl"))
-
-VCFfiles <- list.files(path="/zfstank/ngsdata/projects/icell8_cellenion_publication/figure5/new_target_variants", pattern = "_variants_filt.vcf$", full.names = T)
-vcfNames <- sapply(VCFfiles, function(file) gsub("_variants_filt.vcf","",basename(file)))
+# Deal with command line arguments.
+require(optparse)
+option_list <- list(
+  # Mandatory options
+  make_option(c("-v", "--VCF"), action = "store", default=NA, type="character",
+              help = "Comma-separated VCFs to compare"),
+  make_option(c("-t", "--targetVars"), action = "store", default=NA, type="character",
+              help = "Path to directory with sample-specific variants filtered out for low-depth variants"),
+  make_option(c("-o", "--output"), action = "store", default=NA, type="character", dest="OutDir",
+              help = "Output directory")
+)
+parser <- parse_args(OptionParser(option_list=option_list))
+# check VCFs file are provided
+if (!is.na(parser$VCF)) {
+  VCFfiles <- strsplit(parser$VCF,split=",")[[1]]
+}else {
+  stop("VCF file not defined. See script usage (--help)")
+}
+# check target variant path is set
+if (!is.na(parser$targetVars)) {
+  targetVars <- list.files(parser$targetVars, pattern="filtDepth", full.names=T)
+}else {
+  stop("Target variant path not defined. See script usage (--help)")
+}
+# Output directory
+if (!is.na(parser$OutDir)) {
+  OutDir <- parser$OutDir
+  dir.create(OutDir,showWarnings = F)
+}else {
+  stop("Output directory not defined. See script usage (--help)")
+}
+vcfNames <- sapply(basename(VCFfiles),function(name) gsub("_variants_filt.vcf","",name))
 
 # Extract all variants in VCF file in specific coordinates
 vcf <- lapply(1:length(VCFfiles), function(i){
@@ -23,7 +50,16 @@ vcf <- lapply(1:length(VCFfiles), function(i){
     print(paste("No mutation found for sample",vcfName))
     return(NULL)
   }
+  ## Retrieve depth-filtered targets
+  targetFile <- grep(strsplit(vcfName, "_")[[1]][1],targetVars, value=T)
+  if(length(targetFile)==0){
+    print(paste("No targets found for sample",vcfName))
+    return(NULL)
+  }
+  targets <- read.table(targetFile, sep=",", header=T)
+  targets <- sapply(1:nrow(targets), function(i) paste(targets$chr[i],":",targets$pos[i],"_",targets$REF[i],"/",targets$ALT[i],sep=""))
   
+  vcf <- vcf[targets]
   ## Rename seqlevels with renameSeqlevesl()
   vcf <- renameSeqlevels(vcf, paste0("chr", seqlevels(vcf)))
   vcf <- renameSeqlevels(vcf, gsub("chrMT","chrM", seqlevels(vcf)))
@@ -35,15 +71,7 @@ vcf <- lapply(1:length(VCFfiles), function(i){
     return(NULL)
   }
   mutations <- unique(mutations[,c("REF","ALT","varAllele","CDSLOC","PROTEINLOC","CONSEQUENCE","REFCODON","VARCODON","REFAA","VARAA")])
-  mutations$REF <- as.character(mutations$REF)
-  mutations$ALT <- as.character(unlist(mutations$ALT))
-  mutations$varAllele <- as.character(mutations$varAllele)
-  mutations$CDSLOC <- start(mutations$CDSLOC)
-  mutations$PROTEINLOC <- sapply(mutations$PROTEINLOC, function(loc) paste(as.character(loc),collapse=","))
-  mutations$REFCODON <- as.character(mutations$REFCODON)
-  mutations$VARCODON <- as.character(mutations$VARCODON)
-  mutations$REFAA <- AMINO_ACID_CODE[unlist(as.character(mutations$REFAA))]
-  mutations$VARAA <- AMINO_ACID_CODE[unlist(as.character(mutations$VARAA))]
+  
   ## Add genotype information
   mutations <- unique(merge(as.data.frame(mutations),geno(vcf)$GT, by="row.names"))
   rownames(mutations) <- mutations$Row.names
@@ -65,7 +93,7 @@ vcf <- lapply(1:length(VCFfiles), function(i){
 names(vcf) <- vcfNames
 vcf <- vcf[lapply(vcf,length)>0] ## you can use sapply,rapply
 
-## you can use sapply,rapply
+# Reduce list of targets into data.frame
 df <- Reduce(function(df1, df2){merge(df1, df2, all=T)}, vcf)
 # Remove variations in control (GOE1303 and GOE1305) but not in disease patients
 disease <- grep("1303|1305", grep("genotype*.*ICELL8",colnames(df), value=T), invert=T, value=T)
@@ -90,18 +118,9 @@ attributes <- "external_gene_name"
 filters <- c("chromosome_name","start","end")
 df$genes <- NA
 for(i in 1:nrow(df)){
-  print(i)
   values <- list(chromosome_name=gsub("chr","",gsub("chrM","chrMT",df$chr[i])),start=df$pos[i],end=df$pos[i])
   df$genes[i] <- paste(unique(getBM(attributes=attributes, filters=filters, values=values, mart=mart)),collapse=",")
 }
-df$dbSNP <- NA
-for(i in 1:nrow(df)){
-  print(i)
-  values <- GRanges(gsub("chr","",gsub("chrM","chrMT",df$chr[i])), IRanges(start=df$pos[i],end=df$pos[i]))
-  value <- snpsByOverlaps(snps, values)
-  if(length(value)>0)
-    df$dbSNP[i] <- value$RefSNP_id
-}
 
-write.table(df,file="/zfstank/ngsdata/projects/icell8_cellenion_publication/figure5/new_target_variants/VCF_annotations.csv",
+write.table(df,file=file.path(OutDir, "VCF_annotations.csv"),
             col.names=T, row.names=F, quote=F, sep="\t")
