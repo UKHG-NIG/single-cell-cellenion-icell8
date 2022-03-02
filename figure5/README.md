@@ -25,13 +25,13 @@ gatk IndexFeatureFile -F /path/to/sample_variants_filt.vcf
 ```
 Rscript 3_combine_VCFs.R -v $(find vcf -path '*_variants_filt.vcf' | tr '\n' ',') -o combineVCFs
 ```
-- 4) Find sample-specific mutations
+- 4) Find sample-specific mutations and filter out low-depth variants
 ```
 Rscript 4_sampleSpecificMutations.R -i combineVCFs/VCF_annotations.csv -o sampleSpecificVars
 ```
 - 5) Determine which mutations are non-synonymous
 ```
-Rscript 5_getCodonInfo_target_variants.R
+Rscript 5_getCodonInfo_target_variants.R -v $(find vcf -path '*_variants_filt.vcf' | tr '\n' ',') -o combineVCFs -t sampleSpecificVars
 ```
 - 6) Calculate mutation percentages for top variants
 ```
