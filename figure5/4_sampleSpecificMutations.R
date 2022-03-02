@@ -1,8 +1,32 @@
-tab <- read.csv("/zfstank/ngsdata/projects/icell8_cellenion_publication/figure5/compareVCFs_all/VCF_annotations.csv", header = T)
+# Deal with command line arguments.
+require(optparse)
+option_list <- list(
+  # Mandatory options
+  make_option(c("-i", "--inFile"), action = "store", default=NA, type="character",
+              help = "Comma-separated file with all variants in all samples"),
+  make_option(c("-o", "--output"), action = "store", default=NA, type="character", dest="OutDir",
+              help = "Output directory")
+)
+parser <- parse_args(OptionParser(option_list=option_list))
+# check VCFs file are provided
+if (!is.na(parser$inFile)) {
+  inFile <- parser$inFile
+}else {
+  stop("Input file not defined. See script usage (--help)")
+}
+# Output directory
+if (!is.na(parser$OutDir)) {
+  OutDir <- parser$OutDir
+  dir.create(OutDir,showWarnings = F)
+}else {
+  stop("Output directory not defined. See script usage (--help)")
+}
+
+tab <- read.csv(inFile, header = T)
 samples <- c("Goe247","Goe486","Goe615","Goe800","Goe1309","Goe1360")
 
 # Create table for icell8 variants
-icell8_tab <- tab[,c(1:4,grep("icell8",colnames(tab)))]
+icell8_tab <- tab[,c(1:4,grep("icell8",colnames(tab), ignore.case = T))]
 # Create table for icell8 variants
 bulk_tab <- tab[,c(1:4,grep("bulk",colnames(tab)))]
 
@@ -27,15 +51,16 @@ for(sample in samples){ # Find mutations specific for each sample
   tmp <- tab[rownames(bulk_sampleSpecific),]
   tmp <- tmp[order(tmp$chr, tmp$pos),]
   sampleSpecific[[sample]] <- tmp
-  write.table(tmp,file.path("compareVCFs_all",paste("vars_sample",sample,".csv",sep="")), sep=",",row.names=F, col.names=T, quote = F)
+  write.table(tmp,file.path(OutDir,paste("vars_sample",sample,".csv",sep="")), sep=",",row.names=F, col.names=T, quote = F)
 }
-# Get depth statistics prior filtering
-statsDepth <- lapply(1:length(sampleSpecific), function(i){
-  obj <- sampleSpecific[[i]]
-  name <- names(sampleSpecific)[i]
-  apply(obj[,grep("genotype",grep(name, colnames(obj), value=T), value=T, invert=T)], 2,summary)
-})
-write.table(Reduce("cbind", statsDepth),"compareVCFs_all/depthStats_preFilt.csv", sep=",",row.names=T, col.names=NA)
+# # Get depth statistics prior filtering
+# statsDepth <- lapply(1:length(sampleSpecific), function(i){
+#   obj <- sampleSpecific[[i]]
+#   name <- names(sampleSpecific)[i]
+#   apply(obj[,grep("genotype",grep(name, colnames(obj), value=T), value=T, invert=T)], 2,summary)
+# })
+# write.table(Reduce("cbind", statsDepth),file.path(OutDir,"depthStats_preFilt.csv"), sep=",",row.names=T, col.names=NA)
+
 # Filter for depth
 # 1) Alternative depth >= median alternative depth
 # 2) Total depth >= (median reference depth + median alternative depth)
@@ -51,26 +76,29 @@ for(i in 1:length(sampleSpecific)){
   obj <- obj[apply(obj[,names(mediansRef)]+obj[,names(mediansAlt)]>=mediansRef+mediansAlt,1,all),]
   obj <- obj[apply(obj[,names(mediansMutRate)]>=10,1,all),]
   sampleSpecific_postDepthFilt[[sample]] <- obj
-  write.table(obj,file.path("compareVCFs_all",paste("vars_filtDepth_sample",sample,".csv",sep="")), sep=",",row.names=F, col.names=T, quote = F)
+  write.table(obj,file.path(OutDir,paste("vars_filtDepth_sample",sample,".csv",sep="")), sep=",",row.names=F, col.names=T, quote = F)
 }
-# Get depth statistics post filtering
-statsDepth <- lapply(1:length(sampleSpecific_postDepthFilt), function(i){
-  obj <- sampleSpecific_postDepthFilt[[i]]
-  name <- names(sampleSpecific_postDepthFilt)[i]
-  apply(obj[,grep("genotype",grep(name, colnames(obj), value=T), value=T, invert=T)], 2,summary)
-})
-write.table(Reduce("cbind", statsDepth),"compareVCFs_all/depthStats_postFilt.csv", sep=",",row.names=T, col.names=NA)
-# Get genotype statistics prior filtering
-statsDepth <- lapply(1:length(sampleSpecific_postDepthFilt), function(i){
-  obj <- sampleSpecific_postDepthFilt[[i]]
-  name <- names(sampleSpecific_postDepthFilt)[i]
-  apply(obj[,grep("genotype",grep(name, colnames(obj), value=T), value=T)], 2,table)
-})
-write.table(Reduce("cbind", statsDepth),"compareVCFs_all/genoStats_preFilt.csv", sep=",",row.names=T, col.names=NA)
+
+# # Get depth statistics post filtering
+# statsDepth <- lapply(1:length(sampleSpecific_postDepthFilt), function(i){
+#   obj <- sampleSpecific_postDepthFilt[[i]]
+#   name <- names(sampleSpecific_postDepthFilt)[i]
+#   apply(obj[,grep("genotype",grep(name, colnames(obj), value=T), value=T, invert=T)], 2,summary)
+# })
+# write.table(Reduce("cbind", statsDepth),file.path(OutDir,"depthStats_postFilt.csv"), sep=",",row.names=T, col.names=NA)
+
+# # Get genotype statistics prior filtering
+# statsDepth <- lapply(1:length(sampleSpecific_postDepthFilt), function(i){
+#   obj <- sampleSpecific_postDepthFilt[[i]]
+#   name <- names(sampleSpecific_postDepthFilt)[i]
+#   as.data.frame(apply(obj[,grep("genotype",grep(name, colnames(obj), value=T), value=T)], 2,table))
+# })
+# write.table(Reduce("cbind", statsDepth),file.path(OutDir,"genoStats_preFilt.csv"), sep=",",row.names=T, col.names=NA)
+
 # Filter for genotype (not 0/1)
 for(i in 1:length(sampleSpecific_postDepthFilt)){
   obj <- sampleSpecific_postDepthFilt[[i]]
   sample <- names(sampleSpecific_postDepthFilt)[i]
   obj <- obj[apply(obj[,colnames(statsDepth[[i]])]!="0/1",1,all),]
-  write.table(obj,file.path("compareVCFs_all",paste("vars_filtGeno_sample",sample,".csv",sep="")), sep=",",row.names=F, col.names=T, quote = F)
+  write.table(obj,file.path(OutDir,paste("vars_filtGeno_sample",sample,".csv",sep="")), sep=",",row.names=F, col.names=T, quote = F)
 }
