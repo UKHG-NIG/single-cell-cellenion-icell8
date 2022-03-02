@@ -29,7 +29,7 @@ Rscript 3_combine_VCFs.R -v $(find vcf -path '*_variants_filt.vcf' | tr '\n' ','
 ```
 Rscript 4_sampleSpecificMutations.R -i combineVCFs/VCF_annotations.csv -o sampleSpecificVars
 ```
-- 5) Determine which mutations are non-synonymous
+- 5) Obtain annotation of target filtered variants
 ```
 Rscript 5_getCodonInfo_target_variants.R -v $(find vcf -path '*_variants_filt.vcf' | tr '\n' ',') -o combineVCFs -t sampleSpecificVars
 ```
