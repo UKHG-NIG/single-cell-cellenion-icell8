@@ -60,6 +60,4 @@ The script used for this analysis can be found in the directory ```├──figu
 
 # Citation
 The scripts were used to generate the figures and results for the following paper:
-> **Novel single-cell RNA-sequencing platform and its applicability connecting genotype to phenotype in ageing-disease.** <br> _Orr Shomroni, Maren Sitte, Julia Schmidt, Sabnam Parbin, Fabian Ludewig, Gökhan Yigit, Laura Cecilia Zelarayan, Katrin Streckfuss-Bömeke, Bernd Wollnik, Gabriela Salinas_ <br>
-> bioRxiv 2021.10.25.465702 <br>
-> doi: https://doi.org/10.1101/2021.10.25.465702 <br>
+Shomroni, O., Sitte, M., Schmidt, J. et al. A novel single-cell RNA-sequencing approach and its applicability connecting genotype to phenotype in ageing disease. Sci Rep 12, 4091 (2022). https://doi.org/10.1038/s41598-022-07874-1
